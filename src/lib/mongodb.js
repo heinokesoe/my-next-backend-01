@@ -18,7 +18,7 @@ export function getClientPromise() {
     return globalClientPromise;
   } else {
     const client = new MongoClient(uri, options);
-    return client.connect;
+    return client.connect();
   }
 }
 

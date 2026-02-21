@@ -97,8 +97,16 @@ export async function POST(req) {
   const savePath = path.join(process.cwd(), "public", "profile-images",
     filename);
   // Save file to disk
-  const arrayBuffer = await file.arrayBuffer();
-  await fs.writeFile(savePath, Buffer.from(arrayBuffer));
+  try {
+    await fs.mkdir(path.dirname(savePath), { recursive: true });
+    const arrayBuffer = await file.arrayBuffer();
+    await fs.writeFile(savePath, Buffer.from(arrayBuffer));
+  } catch (err) {
+    return NextResponse.json(
+      { message: "Failed to save image: " + err.message },
+      { status: 500, headers: corsHeaders }
+    );
+  }
   // Update user in MongoDB
   try {
     const client = await getClientPromise();
